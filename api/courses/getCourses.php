@@ -7,14 +7,14 @@ $headers = getallheaders();
 $jwt = str_replace("Bearer ", "", $headers['Authorization']);
 $user = validate_jwt($jwt);
 
-$query = $connection->prepare("SELECT * FROM courses");
+$query = $connection->prepare("SELECT id, title, description, instructor_id FROM courses");
 $query->execute();
 $result = $query->get_result();
 
 $courses = [];
-while ($course = $result->fetch_assoc()) {
-    $courses[] = $course;
+while ($row = $result->fetch_assoc()) {
+    $courses[] = $row;
 }
 
-echo json_encode($courses);
+echo json_encode(["courses" => $courses]);
 ?>
