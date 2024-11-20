@@ -1,48 +1,39 @@
 <?php
 header("Content-Type: application/json");
-include "../../config/connection.php"; 
-include "../../config/jwtMiddleware.php"; 
+include "../../config/connection.php";
+include "../../config/jwtMiddleware.php";
 
 $headers = getallheaders();
 $jwt = str_replace("Bearer ", "", $headers['Authorization']);
-$user = validate_jwt($jwt); 
+$user = validate_jwt($jwt);
 
-if ($user->role !== "instructor") {
-    http_response_code(403);
-    echo json_encode(["error" => "Forbidden: Only instructors can post announcements"]);
-    exit();
-}
-
-$data = json_decode(file_get_contents("php://input"), true);
-
-if (!isset($data['course_id']) || !isset($data['title']) || !isset($data['content'])) {
+$course_id = isset($_GET['course_id']) ? $_GET['course_id'] : null;
+if (!$course_id) {
     http_response_code(400);
-    echo json_encode(["error" => "Course ID, title, and content are required"]);
+    echo json_encode(["error" => "Course ID is required"]);
     exit();
 }
 
-$course_id = $data['course_id'];
-$title = $data['title'];
-$content = $data['content'];
-
-$query = $connection->prepare("SELECT id FROM courses WHERE id = ? AND instructor_id = ?");
-$query->bind_param("ii", $course_id, $user->id);
+$query = $connection->prepare("SELECT id FROM courses WHERE id = ?");
+$query->bind_param("i", $course_id);
 $query->execute();
 $result = $query->get_result();
 
 if ($result->num_rows === 0) {
     http_response_code(404);
-    echo json_encode(["error" => "Course not found or you are not the instructor"]);
+    echo json_encode(["error" => "Course not found"]);
     exit();
 }
 
-$query = $connection->prepare("INSERT INTO announcements (course_id, title, content) VALUES (?, ?, ?)");
-$query->bind_param("iss", $course_id, $title, $content);
+$query = $connection->prepare("SELECT id, title, content, created_at FROM announcements WHERE course_id = ?");
+$query->bind_param("i", $course_id);
+$query->execute();
+$result = $query->get_result();
 
-if ($query->execute()) {
-    echo json_encode(["message" => "Announcement posted successfully"]);
-} else {
-    http_response_code(500);
-    echo json_encode(["error" => "An error occurred while posting the announcement"]);
+$announcements = [];
+while ($row = $result->fetch_assoc()) {
+    $announcements[] = $row;
 }
+
+echo json_encode(["announcements" => $announcements]);
 ?>
