@@ -4,7 +4,7 @@ require_once "vendor/autoload.php";
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
-$jwt_secret = "your_secret_key"; 
+$jwt_secret = "uniqueKey"; 
 function validate_jwt($token) {
     global $jwt_secret;
     try {
