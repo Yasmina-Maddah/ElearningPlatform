@@ -1,4 +1,4 @@
-import api from "./api"; 
+import api from "./api";
 
 export const enrollInCourse = async (courseId) => {
     const response = await api.post("/enrollments/enroll.php", { courseId });

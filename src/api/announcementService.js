@@ -1,4 +1,4 @@
-import api from "./api"; 
+import api from "./api";
 
 export const getAnnouncements = async (courseId) => {
     const response = await api.get(`/announcements/getAnnouncements.php?courseId=${courseId}`);
