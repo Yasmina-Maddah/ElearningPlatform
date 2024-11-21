@@ -5,16 +5,41 @@ import Register from "./components/Auth/Register";
 import StudentDashboard from "./pages/Dashboard/StudentDashboard";
 import InstructorDashboard from "./pages/Dashboard/InstructorDashboard";
 import AdminDashboard from "./pages/Dashboard/AdminDashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const App = () => {
     return (
         <Router>
             <Routes>
+                {/* Public Routes */}
                 <Route path="/" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/student-dashboard" element={<StudentDashboard />} />
-                <Route path="/instructor-dashboard" element={<InstructorDashboard />} />
-                <Route path="/admin-dashboard" element={<AdminDashboard />} />
+
+                {/* Protected Routes */}
+                <Route
+                    path="/student-dashboard"
+                    element={
+                        <ProtectedRoute role="student">
+                            <StudentDashboard />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/instructor-dashboard"
+                    element={
+                        <ProtectedRoute role="instructor">
+                            <InstructorDashboard />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/admin-dashboard"
+                    element={
+                        <ProtectedRoute role="admin">
+                            <AdminDashboard />
+                        </ProtectedRoute>
+                    }
+                />
             </Routes>
         </Router>
     );
