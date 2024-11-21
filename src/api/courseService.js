@@ -1,4 +1,4 @@
-import api from "./api"; // Import the Axios instance
+import api from "./api"; 
 
 export const getAllCourses = async () => {
     const response = await api.get("/courses/getAllCourses.php");
