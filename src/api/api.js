@@ -1,12 +1,20 @@
-import api from "./api"; 
+import axios from "axios";
 
-export const login = async (email, password) => {
-    const response = await api.post("/auth/login.php", { email, password });
-    return response.data; 
-    
-};
+const BASE_URL = "http://localhost/backend/api";
 
-export const register = async (userData) => {
-    const response = await api.post("/auth/register.php", userData);
-    return response.data; 
-};
+const api = axios.create({
+    baseURL: BASE_URL,
+    headers: {
+        "Content-Type": "application/json",
+    },
+});
+
+api.interceptors.request.use((config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+});
+
+export default api;
