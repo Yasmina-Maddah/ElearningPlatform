@@ -4,11 +4,14 @@ import Login from "./components/Auth/Login";
 import Register from "./components/Auth/Register";
 import StudentDashboard from "./components/Student/Dashboard";
 import BrowseCourses from "./components/Student/BrowseCourses";
-import CourseDetails from "./components/Student/CourseDetails";
-import Assignments from "./components/Student/Assignments";
-import Announcements from "./components/Student/Announcements";
-import InstructorDashboard from "./pages/Dashboard/InstructorDashboard";
-import AdminDashboard from "./pages/Dashboard/AdminDashboard";
+import CourseDetailsStudent from "./components/Student/CourseDetails";
+import AssignmentsStudent from "./components/Student/Assignments";
+import AnnouncementsStudent from "./components/Student/Announcements";
+import InstructorDashboard from "./components/Instructor/Dashboard";
+import ManageCourses from "./components/Instructor/ManageCourses";
+import CourseDetailsInstructor from "./components/Instructor/CourseDetails";
+import AssignmentsInstructor from "./components/Instructor/Assignments";
+import AnnouncementsInstructor from "./components/Instructor/Announcements";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 const App = () => {
@@ -19,8 +22,7 @@ const App = () => {
                 <Route path="/" element={<Login />} />
                 <Route path="/register" element={<Register />} />
 
-                {/* Protected Routes */}
-                {/* Student Pages */}
+                {/* Student Routes */}
                 <Route
                     path="/student-dashboard"
                     element={
@@ -38,31 +40,31 @@ const App = () => {
                     }
                 />
                 <Route
-                    path="/course-details/:courseId"
+                    path="/course-details/student/:courseId"
                     element={
                         <ProtectedRoute role="student">
-                            <CourseDetails />
+                            <CourseDetailsStudent />
                         </ProtectedRoute>
                     }
                 />
                 <Route
-                    path="/assignments/:courseId"
+                    path="/assignments/student/:courseId"
                     element={
                         <ProtectedRoute role="student">
-                            <Assignments />
+                            <AssignmentsStudent />
                         </ProtectedRoute>
                     }
                 />
                 <Route
-                    path="/announcements/:courseId"
+                    path="/announcements/student/:courseId"
                     element={
                         <ProtectedRoute role="student">
-                            <Announcements />
+                            <AnnouncementsStudent />
                         </ProtectedRoute>
                     }
                 />
 
-                {/* Instructor Pages */}
+                {/* Instructor Routes */}
                 <Route
                     path="/instructor-dashboard"
                     element={
@@ -71,13 +73,35 @@ const App = () => {
                         </ProtectedRoute>
                     }
                 />
-
-                {/* Admin Pages */}
                 <Route
-                    path="/admin-dashboard"
+                    path="/manage-courses"
                     element={
-                        <ProtectedRoute role="admin">
-                            <AdminDashboard />
+                        <ProtectedRoute role="instructor">
+                            <ManageCourses />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/course-details/instructor/:courseId"
+                    element={
+                        <ProtectedRoute role="instructor">
+                            <CourseDetailsInstructor />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/assignments/instructor/:courseId"
+                    element={
+                        <ProtectedRoute role="instructor">
+                            <AssignmentsInstructor />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/announcements/instructor/:courseId"
+                    element={
+                        <ProtectedRoute role="instructor">
+                            <AnnouncementsInstructor />
                         </ProtectedRoute>
                     }
                 />
