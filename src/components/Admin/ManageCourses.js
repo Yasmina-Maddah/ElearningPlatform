@@ -1,86 +1,41 @@
-import React, { useEffect, useState } from "react";
-import { getUsers, createUser, deleteUser, banUser } from "../../api/userService";
+import React, { useState, useEffect } from "react";
+import { getAllCourses, deleteCourse } from "../../api/courseService";
 
-const ManageUsers = () => {
-    const [users, setUsers] = useState([]);
-    const [newUser, setNewUser] = useState({ name: "", email: "", role: "student" });
+const ManageCourses = () => {
+    const [courses, setCourses] = useState([]);
     const [message, setMessage] = useState("");
 
     useEffect(() => {
-        const fetchUsers = async () => {
+        const fetchCourses = async () => {
             try {
-                const data = await getUsers();
-                setUsers(data.users);
+                const data = await getAllCourses();
+                setCourses(data.courses);
             } catch (error) {
-                console.error("Error fetching users:", error);
+                console.error("Error fetching courses:", error);
             }
         };
 
-        fetchUsers();
+        fetchCourses();
     }, []);
 
-    const handleCreateUser = async () => {
+    const handleDeleteCourse = async (courseId) => {
         try {
-            const data = await createUser(newUser);
+            const data = await deleteCourse(courseId);
             setMessage(data.message);
-            setUsers([...users, data.user]);
+            setCourses(courses.filter((course) => course.id !== courseId));
         } catch (error) {
-            setMessage("Error creating user.");
-        }
-    };
-
-    const handleDeleteUser = async (userId) => {
-        try {
-            const data = await deleteUser(userId);
-            setMessage(data.message);
-            setUsers(users.filter((user) => user.id !== userId));
-        } catch (error) {
-            setMessage("Error deleting user.");
-        }
-    };
-
-    const handleBanUser = async (userId) => {
-        try {
-            const data = await banUser(userId);
-            setMessage(data.message);
-        } catch (error) {
-            setMessage("Error banning user.");
+            setMessage("Error deleting course.");
         }
     };
 
     return (
         <div>
-            <h1>Manage Users</h1>
-            <div>
-                <h2>Create New User</h2>
-                <input
-                    type="text"
-                    placeholder="Name"
-                    value={newUser.name}
-                    onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
-                />
-                <input
-                    type="email"
-                    placeholder="Email"
-                    value={newUser.email}
-                    onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-                />
-                <select
-                    value={newUser.role}
-                    onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
-                >
-                    <option value="student">Student</option>
-                    <option value="instructor">Instructor</option>
-                </select>
-                <button onClick={handleCreateUser}>Create</button>
-            </div>
-            <h2>All Users</h2>
+            <h1>Manage Courses</h1>
             <ul>
-                {users.map((user) => (
-                    <li key={user.id}>
-                        {user.name} - {user.role}
-                        <button onClick={() => handleDeleteUser(user.id)}>Delete</button>
-                        <button onClick={() => handleBanUser(user.id)}>Ban</button>
+                {courses.map((course) => (
+                    <li key={course.id}>
+                        {course.title}
+                        <button onClick={() => handleDeleteCourse(course.id)}>Delete</button>
                     </li>
                 ))}
             </ul>
@@ -89,4 +44,4 @@ const ManageUsers = () => {
     );
 };
 
-export default ManageUsers;
+export default ManageCourses;
